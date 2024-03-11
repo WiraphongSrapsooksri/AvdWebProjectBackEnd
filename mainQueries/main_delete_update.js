@@ -1,9 +1,6 @@
 // mainGet.js
 const express = require("express");
-const jwt = require("jsonwebtoken");
-const bcrypt = require("bcrypt");
 const { connectDB } = require("../db");
-const sql = require("mssql");
 const router = express.Router();
 
 const querydelete_update = require("../Queries/delete_update");

@@ -1,16 +1,22 @@
 {
   "name": "nodejsjwt",
   "version": "1.0.0",
-  "description": "",
+  "description": "Nodejs BackendAvd",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon app.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "jest"
   },
-  "keywords": [],
+  "keywords": [
+    "nodejs",
+    "kb",
+    "docker"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "argon2": "^0.40.1",
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
