@@ -34,8 +34,9 @@ router.post("/login", async (req, res) => {
       { userId: user.id, username: user.username },
       "5555"
     );
+    
     console.log("Generated Token:", token);
-    res.json({ token });
+    res.json({ "token":token,"user":user });
   } catch (error) {
     console.error("Login error:", error);
     res.status(500).json({ message: "Internal server error" });
