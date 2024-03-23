@@ -139,4 +139,23 @@ router.get("/getRandomImage", async (req, res) => {
 //   }
 // });
 
+
+router.get("/getListDailyByday_statsByIduser/:id", async (req, res) => {
+  try {
+    const pool = await connectDB();
+    const query = queriesget.getListDailyByday_statsByIduser(req.params.id);
+    const result = await pool.request().query(query);
+
+    if (result) {
+      res.json(result.recordset);
+    } else {
+      res.status(404).json({ error: "User not found" });
+    }
+  } catch (err) {
+    console.error("Error retrieving user data:", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  } finally {
+    // sql.close();
+  }
+});
 module.exports = router;

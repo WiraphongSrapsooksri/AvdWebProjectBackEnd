@@ -65,11 +65,49 @@ function getRandomImage() {
 
   `;
 }
+
+function getListDailyByday_statsByIduser(id) {
+  return `
+  
+WITH CurrentAndPrevious AS (
+  SELECT
+      i.user_id,
+      ds.image_id,
+      ds.date,
+      ds.votes_gained,
+      ds.rank,
+      LAG(ds.date) OVER (PARTITION BY ds.image_id ORDER BY ds.date) AS prev_date,
+      LAG(ds.votes_gained) OVER (PARTITION BY ds.image_id ORDER BY ds.date) AS prev_votes_gained,
+      LAG(ds.rank) OVER (PARTITION BY ds.image_id ORDER BY ds.date) AS prev_rank
+  FROM
+      daily_stats_avdweb ds
+  INNER JOIN
+      images_avdweb i ON ds.image_id = i.id
+  WHERE
+      i.user_id = '${id}'
+)
+SELECT
+  image_id,
+  date,
+  votes_gained,
+  rank,
+  prev_date,
+  prev_votes_gained,
+  prev_rank
+FROM
+  CurrentAndPrevious
+WHERE
+  date = CAST(GETDATE() AS DATE) AND (prev_date = DATEADD(day, -1, CAST(GETDATE() AS DATE)) OR prev_date IS NOT NULL)
+  AND (votes_gained != prev_votes_gained OR rank != prev_rank);
+
+  `;
+}
 module.exports = {
   getrankimage,
   getListuser,
   getListimagebyid,
   getdaily_statsByIdImage,
   getListDaily_statsByIduser,
-  getRandomImage
+  getRandomImage,
+  getListDailyByday_statsByIduser
 };
