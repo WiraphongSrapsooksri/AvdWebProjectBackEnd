@@ -15,8 +15,27 @@ function deleteimageByuser(image_id, user_id) {
     `;
 }
 
+function updateimageprofile(image_url, user_id) {
+  return `
+  UPDATE  users_avdweb
+  SET     image_profile = '${image_url}'
+  WHERE   id = ${user_id}
 
+  `;
+}
+
+function updatedataprofile(user_id, username, aka, email) {
+  return `
+  UPDATE  users_avdweb
+  SET     username = '${username}',    
+          aka = '${aka}',
+          email = '${email}'
+  WHERE   id = ${user_id}
+  `
+}
 module.exports = {
   updateimage,
-  deleteimageByuser
+  deleteimageByuser,
+  updateimageprofile,
+  updatedataprofile
 };

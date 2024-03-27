@@ -8,6 +8,49 @@ function getrankimage() {
   `;
 }
 
+function getrankimageandchangeRank() {
+  return `
+  WITH CurrentAndPrevious AS (
+    SELECT
+        i.id AS image_id,
+        i.image_url,
+        i.votes,
+        i.user_id,
+        u.username,
+        ds.date,
+        ds.rank,
+        LAG(ds.rank) OVER (PARTITION BY ds.image_id ORDER BY ds.date) AS prev_rank
+    FROM
+        daily_stats_avdweb ds
+    INNER JOIN
+        images_avdweb i ON ds.image_id = i.id
+    INNER JOIN
+        users_avdweb u ON i.user_id = u.id
+),
+RankChanges AS (
+    SELECT
+        *,
+        prev_rank - rank AS rank_change
+    FROM
+        CurrentAndPrevious
+    WHERE
+        date = CAST(GETDATE() AS DATE) 
+)
+SELECT
+    i.*,
+    u.username,
+    rc.rank_change
+FROM
+    images_avdweb i
+LEFT JOIN
+    users_avdweb u ON i.user_id = u.id
+LEFT JOIN
+    RankChanges rc ON i.id = rc.image_id
+ORDER BY
+    i.votes DESC;
+  `;
+}
+
 function getListuser() {
   return `
     SELECT      id,username,email,image_profile,textBio,aka 
@@ -97,9 +140,31 @@ SELECT
 FROM
   CurrentAndPrevious
 WHERE
-  date = CAST(GETDATE() AS DATE) AND (prev_date = DATEADD(day, -1, CAST(GETDATE() AS DATE)) OR prev_date IS NOT NULL)
+  date = CAST(GETDATE() AS DATE) AND (prev_date = DATEADD(day,-1, CAST(GETDATE() AS DATE)) OR prev_date IS NOT NULL)
   AND (votes_gained != prev_votes_gained OR rank != prev_rank);
 
+  `;
+}
+
+function getrank_daily_stats_GETDATE_dif1() {
+  return `
+  SELECT  images_avdweb.* , users_avdweb.username,
+  daily_stats_avdweb.date as yesterday,
+  daily_stats_avdweb.rank as rank_yesterday,
+  daily_stats_avdweb.votes_gained as vote_yesterday
+FROM    images_avdweb , users_avdweb,daily_stats_avdweb
+WHERE   images_avdweb.user_id = users_avdweb.id
+AND     images_avdweb.id = daily_stats_avdweb.image_id
+AND     date = CAST(GETDATE()-1 AS DATE)
+ORDER BY votes DESC
+  `;
+}
+
+function getuserById(id) {
+  return `
+  select  * 
+from    users_avdweb
+WHERE   id = '${id}'
   `;
 }
 module.exports = {
@@ -109,5 +174,8 @@ module.exports = {
   getdaily_statsByIdImage,
   getListDaily_statsByIduser,
   getRandomImage,
-  getListDailyByday_statsByIduser
+  getListDailyByday_statsByIduser,
+  getrankimageandchangeRank,
+  getrank_daily_stats_GETDATE_dif1,
+  getuserById
 };

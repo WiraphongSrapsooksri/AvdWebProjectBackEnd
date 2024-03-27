@@ -24,6 +24,44 @@ router.get("/rangimage", async (req, res) => {
   }
 });
 
+router.get("/rangimage_GETDATE_dif1", async (req, res) => {
+  try {
+    const pool = await connectDB();
+    const querymemid = queriesget.getrank_daily_stats_GETDATE_dif1();
+    const result = await pool.request().query(querymemid);
+
+    if (result) {
+      res.json(result.recordset);
+    } else {
+      res.status(404).json({ error: "User not found" });
+    }
+  } catch (err) {
+    console.error("Error retrieving user data:", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  } finally {
+    // sql.close();
+  }
+});
+
+router.get("/rangimageandchangeRank", async (req, res) => {
+  try {
+    const pool = await connectDB();
+    const querymemid = queriesget.getrankimageandchangeRank();
+    const result = await pool.request().query(querymemid);
+
+    if (result) {
+      res.json(result.recordset);
+    } else {
+      res.status(404).json({ error: "User not found" });
+    }
+  } catch (err) {
+    console.error("Error retrieving user data:", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  } finally {
+    // sql.close();
+  }
+});
+
 router.get("/getListuser", async (req, res) => {
   try {
     const pool = await connectDB();
@@ -61,7 +99,6 @@ router.get("/getListimagebyid/:id", async (req, res) => {
     sql.close();
   }
 });
-
 
 router.get("/getdaily_statsByIdImage/:id", async (req, res) => {
   try {
@@ -139,7 +176,6 @@ router.get("/getRandomImage", async (req, res) => {
 //   }
 // });
 
-
 router.get("/getListDailyByday_statsByIduser/:id", async (req, res) => {
   try {
     const pool = await connectDB();
@@ -158,4 +194,24 @@ router.get("/getListDailyByday_statsByIduser/:id", async (req, res) => {
     // sql.close();
   }
 });
+
+router.get("/getuserById/:id", async (req, res) => {
+  try {
+    const pool = await connectDB();
+    const query = queriesget.getuserById(req.params.id);
+    const result = await pool.request().query(query);
+
+    if (result) {
+      res.json(result.recordset);
+    } else {
+      res.status(404).json({ error: "User not found" });
+    }
+  } catch (err) {
+    console.error("Error retrieving user data:", err);
+    res.status(500).json({ error: "Internal Server Error" });
+  } finally {
+    // sql.close();
+  }
+});
+
 module.exports = router;
