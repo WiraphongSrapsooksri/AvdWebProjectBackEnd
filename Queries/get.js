@@ -152,11 +152,11 @@ function getrank_daily_stats_GETDATE_dif1() {
   daily_stats_avdweb.date as yesterday,
   daily_stats_avdweb.rank as rank_yesterday,
   daily_stats_avdweb.votes_gained as vote_yesterday
-FROM    images_avdweb , users_avdweb,daily_stats_avdweb
-WHERE   images_avdweb.user_id = users_avdweb.id
-AND     images_avdweb.id = daily_stats_avdweb.image_id
-AND     date = CAST(GETDATE()-1 AS DATE)
-ORDER BY votes DESC
+  FROM    images_avdweb , users_avdweb,daily_stats_avdweb
+  WHERE   images_avdweb.user_id = users_avdweb.id
+  AND     images_avdweb.id = daily_stats_avdweb.image_id
+  AND     date = CAST(GETDATE()-1 AS DATE)
+  ORDER BY votes DESC
   `;
 }
 
